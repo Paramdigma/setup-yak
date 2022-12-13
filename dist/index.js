@@ -1,39 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 2932:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-const core = __nccwpck_require__(2186)
-const tc = __nccwpck_require__(7784)
-const path = __nccwpck_require__(1017)
-
-async function setup() {
-  // Get version of tool to be installed
-  const version = core.getInput("version")
-  core.startGroup("YAK Setup")
-  console.log("Starting Yak setup with version:", version)
-
-  const url = `https://files.mcneel.com/yak/tools/${version}/yak.exe`
-  const pathToExe = await tc.downloadTool(url)
-
-  console.log("Downloaded yak into:", pathToExe)
-
-  //const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak")
-  //console.log("Cached yak as:", cached)
-  console.log("windows path to exe", core.toWin32Path(pathToExe))
-  // Expose the tool by adding it to the PATH
-  core.addPath(path.dirname(pathToExe))
-
-  console.log("Added yak dir to path", path.dirname(pathToExe))
-  core.endGroup()
-}
-
-module.exports = setup
-
-
-/***/ }),
-
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -6730,12 +6697,38 @@ module.exports = require("util");
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-/******/ 	
-/******/ 	// startup
-/******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(2932);
-/******/ 	module.exports = __webpack_exports__;
-/******/ 	
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+(() => {
+const core = __nccwpck_require__(2186)
+const tc = __nccwpck_require__(7784)
+const path = __nccwpck_require__(1017)
+
+async function setup() {
+  // Get version of tool to be installed
+  const version = core.getInput("version")
+  core.startGroup("YAK Setup")
+  console.log("Starting Yak setup with version:", version)
+
+  const url = `https://files.mcneel.com/yak/tools/${version}/yak.exe`
+  const pathToExe = await tc.downloadTool(url)
+
+  console.log("Downloaded yak into:", pathToExe)
+
+  //const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak")
+  //console.log("Cached yak as:", cached)
+  console.log("windows path to exe", core.toWin32Path(pathToExe))
+  // Expose the tool by adding it to the PATH
+  core.addPath(path.dirname(pathToExe))
+
+  console.log("Added yak dir to path", path.dirname(pathToExe))
+  core.endGroup()
+}
+
+setup()
+
+})();
+
+module.exports = __webpack_exports__;
 /******/ })()
 ;

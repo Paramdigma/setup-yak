@@ -23,4 +23,4 @@ async function setup() {
   core.endGroup()
 }
 
-module.exports = setup
+setup()
