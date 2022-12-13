@@ -7,6 +7,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: paramdigma/setup-yak@1.0.0
+    - uses: paramdigma/setup-yak@0.0.1
     - run: yak -h
       
