@@ -6,6 +6,8 @@ jobs:
   test:
     runs-on: windows-latest
     steps:
-      - uses: ./
-      - run: echo "$PATH"
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Use local action
+        uses: ./
       - run: yak -h
