@@ -1,10 +1,5 @@
 name: "Setup McNeel's YAK"
 description: "Sets up `yak` tool to publish Rhino/Grasshopper packages"
-inputs:
-  version: # id of input
-    description: "The specific version of YAK to use"
-    required: false
-    default: latest
 runs:
   using: "node16"
   main: "dist/index.js"
