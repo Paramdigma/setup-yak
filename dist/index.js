@@ -6714,7 +6714,7 @@ async function setup() {
 
   console.log("Downloaded yak into:", pathToExe)
 
-  const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak")
+  const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak", "1.0.0.0")
   console.log("Cached yak as:", cached)
   // Expose the tool by adding it to the PATH
   core.addPath(path.dirname(cached))
