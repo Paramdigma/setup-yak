@@ -1,12 +1,10 @@
 name: Test setup-yak action
 
-on: 
-  workflow_dispatch
+on: push
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: paramdigma/setup-yak@0.0.1
-    - run: yak -h
-      
+      - uses: paramdigma/setup-yak@0.0.2
+      - run: yak -h
