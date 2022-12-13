@@ -1,6 +1,5 @@
 const { RunTarget, RunOptions } = require("github-action-ts-run-api")
 const setup = require("./index")
-const { deleteAllFakedDirs } = require("github-action-ts-run-api")
 
 test("Yak path is set by action", async () => {
   // Read action config from action.yml file.
