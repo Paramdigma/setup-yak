@@ -4010,220 +4010,6 @@ module.exports = v4;
 
 /***/ }),
 
-/***/ 4090:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-var fs = __nccwpck_require__(7147)
-var path = __nccwpck_require__(1017)
-var os = __nccwpck_require__(2037)
-
-// Workaround to fix webpack's build warnings: 'the request of a dependency is an expression'
-var runtimeRequire =  true ? eval("require") : 0 // eslint-disable-line
-
-var vars = (process.config && process.config.variables) || {}
-var prebuildsOnly = !!process.env.PREBUILDS_ONLY
-var abi = process.versions.modules // TODO: support old node where this is undef
-var runtime = isElectron() ? 'electron' : (isNwjs() ? 'node-webkit' : 'node')
-
-var arch = process.env.npm_config_arch || os.arch()
-var platform = process.env.npm_config_platform || os.platform()
-var libc = process.env.LIBC || (isAlpine(platform) ? 'musl' : 'glibc')
-var armv = process.env.ARM_VERSION || (arch === 'arm64' ? '8' : vars.arm_version) || ''
-var uv = (process.versions.uv || '').split('.')[0]
-
-module.exports = load
-
-function load (dir) {
-  return runtimeRequire(load.path(dir))
-}
-
-load.path = function (dir) {
-  dir = path.resolve(dir || '.')
-
-  try {
-    var name = runtimeRequire(path.join(dir, 'package.json')).name.toUpperCase().replace(/-/g, '_')
-    if (process.env[name + '_PREBUILD']) dir = process.env[name + '_PREBUILD']
-  } catch (err) {}
-
-  if (!prebuildsOnly) {
-    var release = getFirst(path.join(dir, 'build/Release'), matchBuild)
-    if (release) return release
-
-    var debug = getFirst(path.join(dir, 'build/Debug'), matchBuild)
-    if (debug) return debug
-  }
-
-  var prebuild = resolve(dir)
-  if (prebuild) return prebuild
-
-  var nearby = resolve(path.dirname(process.execPath))
-  if (nearby) return nearby
-
-  var target = [
-    'platform=' + platform,
-    'arch=' + arch,
-    'runtime=' + runtime,
-    'abi=' + abi,
-    'uv=' + uv,
-    armv ? 'armv=' + armv : '',
-    'libc=' + libc,
-    'node=' + process.versions.node,
-    process.versions.electron ? 'electron=' + process.versions.electron : '',
-     true ? 'webpack=true' : 0 // eslint-disable-line
-  ].filter(Boolean).join(' ')
-
-  throw new Error('No native build was found for ' + target + '\n    loaded from: ' + dir + '\n')
-
-  function resolve (dir) {
-    // Find matching "prebuilds/<platform>-<arch>" directory
-    var tuples = readdirSync(path.join(dir, 'prebuilds')).map(parseTuple)
-    var tuple = tuples.filter(matchTuple(platform, arch)).sort(compareTuples)[0]
-    if (!tuple) return
-
-    // Find most specific flavor first
-    var prebuilds = path.join(dir, 'prebuilds', tuple.name)
-    var parsed = readdirSync(prebuilds).map(parseTags)
-    var candidates = parsed.filter(matchTags(runtime, abi))
-    var winner = candidates.sort(compareTags(runtime))[0]
-    if (winner) return path.join(prebuilds, winner.file)
-  }
-}
-
-function readdirSync (dir) {
-  try {
-    return fs.readdirSync(dir)
-  } catch (err) {
-    return []
-  }
-}
-
-function getFirst (dir, filter) {
-  var files = readdirSync(dir).filter(filter)
-  return files[0] && path.join(dir, files[0])
-}
-
-function matchBuild (name) {
-  return /\.node$/.test(name)
-}
-
-function parseTuple (name) {
-  // Example: darwin-x64+arm64
-  var arr = name.split('-')
-  if (arr.length !== 2) return
-
-  var platform = arr[0]
-  var architectures = arr[1].split('+')
-
-  if (!platform) return
-  if (!architectures.length) return
-  if (!architectures.every(Boolean)) return
-
-  return { name, platform, architectures }
-}
-
-function matchTuple (platform, arch) {
-  return function (tuple) {
-    if (tuple == null) return false
-    if (tuple.platform !== platform) return false
-    return tuple.architectures.includes(arch)
-  }
-}
-
-function compareTuples (a, b) {
-  // Prefer single-arch prebuilds over multi-arch
-  return a.architectures.length - b.architectures.length
-}
-
-function parseTags (file) {
-  var arr = file.split('.')
-  var extension = arr.pop()
-  var tags = { file: file, specificity: 0 }
-
-  if (extension !== 'node') return
-
-  for (var i = 0; i < arr.length; i++) {
-    var tag = arr[i]
-
-    if (tag === 'node' || tag === 'electron' || tag === 'node-webkit') {
-      tags.runtime = tag
-    } else if (tag === 'napi') {
-      tags.napi = true
-    } else if (tag.slice(0, 3) === 'abi') {
-      tags.abi = tag.slice(3)
-    } else if (tag.slice(0, 2) === 'uv') {
-      tags.uv = tag.slice(2)
-    } else if (tag.slice(0, 4) === 'armv') {
-      tags.armv = tag.slice(4)
-    } else if (tag === 'glibc' || tag === 'musl') {
-      tags.libc = tag
-    } else {
-      continue
-    }
-
-    tags.specificity++
-  }
-
-  return tags
-}
-
-function matchTags (runtime, abi) {
-  return function (tags) {
-    if (tags == null) return false
-    if (tags.runtime !== runtime && !runtimeAgnostic(tags)) return false
-    if (tags.abi !== abi && !tags.napi) return false
-    if (tags.uv && tags.uv !== uv) return false
-    if (tags.armv && tags.armv !== armv) return false
-    if (tags.libc && tags.libc !== libc) return false
-
-    return true
-  }
-}
-
-function runtimeAgnostic (tags) {
-  return tags.runtime === 'node' && tags.napi
-}
-
-function compareTags (runtime) {
-  // Precedence: non-agnostic runtime, abi over napi, then by specificity.
-  return function (a, b) {
-    if (a.runtime !== b.runtime) {
-      return a.runtime === runtime ? -1 : 1
-    } else if (a.abi !== b.abi) {
-      return a.abi ? -1 : 1
-    } else if (a.specificity !== b.specificity) {
-      return a.specificity > b.specificity ? -1 : 1
-    } else {
-      return 0
-    }
-  }
-}
-
-function isNwjs () {
-  return !!(process.versions && process.versions.nw)
-}
-
-function isElectron () {
-  if (process.versions && process.versions.electron) return true
-  if (process.env.ELECTRON_RUN_AS_NODE) return true
-  return typeof window !== 'undefined' && window.process && window.process.type === 'renderer'
-}
-
-function isAlpine (platform) {
-  return platform === 'linux' && fs.existsSync('/etc/alpine-release')
-}
-
-// Exposed for unit tests
-// TODO: move to lib
-load.parseTags = parseTags
-load.matchTags = matchTags
-load.compareTags = compareTags
-load.parseTuple = parseTuple
-load.matchTuple = matchTuple
-load.compareTuples = compareTuples
-
-
-/***/ }),
-
 /***/ 5911:
 /***/ ((module, exports) => {
 
@@ -6753,32 +6539,6 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 7491:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-"use strict";
-
-
-const resolve = (__nccwpck_require__(1017).resolve)
-const isWindows = process.platform === 'win32'
-const binding = isWindows ? __nccwpck_require__(4090)(__dirname) : null
-
-module.exports = function (file) {
-  if (typeof file !== 'string') {
-    const t = typeof file
-    throw new Error('win-version-info requires a string filename, got: ' + t)
-  }
-
-  if (file === '') {
-    throw new Error('win-version-info requires a non-empty string filename')
-  }
-
-  return isWindows ? binding.getInfo(resolve(file)) : {}
-}
-
-
-/***/ }),
-
 /***/ 9491:
 /***/ ((module) => {
 
@@ -6943,7 +6703,7 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(2186)
 const tc = __nccwpck_require__(7784)
 const path = __nccwpck_require__(1017)
-const vi = __nccwpck_require__(7491)
+const exec = (__nccwpck_require__(2081).exec)
 
 async function setup() {
   // Get version of tool to be installed
@@ -6955,8 +6715,18 @@ async function setup() {
 
   console.log("Downloaded yak into:", pathToExe)
 
-  var vinfo = vi(pathToExe)
-  console.log(vinfo)
+  var realVersion = await new Promise((res, rej) => {
+    exec(
+      `wmic datafile where name="${pathToExe}" get Version`,
+      function (err, stdout, _) {
+        if (!err) {
+          res(stdout) // parse this string for version
+        }
+        rej(err)
+      }
+    )
+  })
+  console.log(realVersion)
 
   const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak", "1.0.0.0")
   console.log("Cached yak as:", cached)
