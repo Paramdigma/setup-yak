@@ -1,5 +1,6 @@
 const core = require("@actions/core")
 const tc = require("@actions/tool-cache")
+const path = require("path")
 
 async function setup() {
   // Get version of tool to be installed
@@ -11,7 +12,7 @@ async function setup() {
   const pathToExe = await tc.downloadTool(url)
   const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak")
   // Expose the tool by adding it to the PATH
-  core.addPath(cached)
+  core.addPath(path.dirname(cached))
 }
 
 module.exports = setup
