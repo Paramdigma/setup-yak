@@ -6,6 +6,6 @@ jobs:
   test:
     runs-on: windows-latest
     steps:
-      - uses: paramdigma/setup-yak@test-action
+      - uses: paramdigma/setup-yak@${{ github.ref_name }}
       - run: echo "$PATH"
       - run: yak -h
