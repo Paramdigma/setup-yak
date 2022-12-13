@@ -15,8 +15,8 @@ async function setup() {
   const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak", "1.0.0.0")
   console.log("Cached yak as:", cached)
   // Expose the tool by adding it to the PATH
-  core.addPath(path.dirname(cached))
-  console.log("Added yak dir to path", path.dirname(pathToExe))
+  core.addPath(cached)
+  console.log("Added yak dir to path", cached)
 }
 
 setup()

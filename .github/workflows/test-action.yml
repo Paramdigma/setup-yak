@@ -6,6 +6,6 @@ jobs:
   test:
     runs-on: windows-latest
     steps:
-      - uses: paramdigma/setup-yak@0.0.7
+      - uses: paramdigma/setup-yak@test-action
       - run: echo "$PATH"
       - run: yak -h
