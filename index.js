@@ -1,7 +1,6 @@
 const core = require("@actions/core")
 const tc = require("@actions/tool-cache")
-const path = require("path")
-const exec = require("child_process").exec
+const { getFileProperties } = require("get-file-properties")
 
 async function setup() {
   // Get version of tool to be installed
@@ -13,17 +12,7 @@ async function setup() {
 
   console.log("Downloaded yak into:", pathToExe)
 
-  var realVersion = await new Promise((res, rej) => {
-    exec(
-      `wmic datafile where name="${pathToExe}" get Version`,
-      function (err, stdout, _) {
-        if (!err) {
-          res(stdout) // parse this string for version
-        }
-        rej(err)
-      }
-    )
-  })
+  var realVersion = await getFileProperties(pathToExe.replace("\\", "\\\\"))
   console.log(realVersion)
 
   const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak", "1.0.0.0")

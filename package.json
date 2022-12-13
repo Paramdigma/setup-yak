@@ -13,6 +13,7 @@
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/tool-cache": "^2.0.1",
+    "get-file-properties": "^1.0.1",
     "win-version-info": "^6.0.1"
   },
   "devDependencies": {
