@@ -6,8 +6,6 @@
 
 const core = __nccwpck_require__(2186)
 const tc = __nccwpck_require__(7784)
-const path = __nccwpck_require__(1017)
-const vi = __nccwpck_require__(8190)
 
 async function setup() {
   // Get version of tool to be installed
@@ -6562,14 +6560,6 @@ function version(uuid) {
 
 var _default = version;
 exports["default"] = _default;
-
-/***/ }),
-
-/***/ 8190:
-/***/ ((module) => {
-
-module.exports = eval("require")("win-version-info");
-
 
 /***/ }),
 
