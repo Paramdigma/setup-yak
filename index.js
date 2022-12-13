@@ -12,10 +12,15 @@ async function setup() {
 
   console.log("Downloaded yak into:", pathToExe)
 
-  var realVersion = await getFileProperties(pathToExe.replace("\\", "\\\\"))
-  console.log(realVersion)
+  var fileInfo = await getFileProperties(pathToExe.replace("\\", "\\\\"))
+  console.log(fileInfo.Version)
 
-  const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak", "1.0.0.0")
+  const cached = await tc.cacheFile(
+    pathToExe,
+    "yak.exe",
+    "yak",
+    fileInfo.Version
+  )
   console.log("Cached yak as:", cached)
   // Expose the tool by adding it to the PATH
   core.addPath(cached)
