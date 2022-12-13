@@ -6833,15 +6833,31 @@ async function setup() {
   const version = core.getInput("version")
   console.log("Starting Yak setup with version:", version)
 
+  if (version != "latest") {
+    console.log("Specific version detected, attempting to find cached tool")
+    var toolPath = tc.find("yak", version)
+    console.log("Find result", toolPath)
+    if (toolPath != null) {
+      console.log("Adding tool to path")
+      core.addPath(toolPath)
+      return
+    }
+  }
+
   const url = `https://files.mcneel.com/yak/tools/${version}/yak.exe`
   const pathToExe = await tc.downloadTool(url)
 
   console.log("Downloaded yak into:", pathToExe)
 
-  var realVersion = await getFileProperties(pathToExe.replace("\\", "\\\\"))
-  console.log(realVersion)
+  var fileInfo = await getFileProperties(pathToExe.replace("\\", "\\\\"))
+  console.log(fileInfo.Version)
 
-  const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak", "1.0.0.0")
+  const cached = await tc.cacheFile(
+    pathToExe,
+    "yak.exe",
+    "yak",
+    fileInfo.Version
+  )
   console.log("Cached yak as:", cached)
   // Expose the tool by adding it to the PATH
   core.addPath(cached)
