@@ -1,6 +1,7 @@
 const core = require("@actions/core")
 const tc = require("@actions/tool-cache")
 const path = require("path")
+const vi = require("win-version-info")
 
 async function setup() {
   // Get version of tool to be installed
@@ -11,6 +12,9 @@ async function setup() {
   const pathToExe = await tc.downloadTool(url)
 
   console.log("Downloaded yak into:", pathToExe)
+
+  var vinfo = vi(pathToExe)
+  console.log(vinfo)
 
   const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak", "1.0.0.0")
   console.log("Cached yak as:", cached)
