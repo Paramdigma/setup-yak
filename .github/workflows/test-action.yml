@@ -10,6 +10,4 @@ jobs:
         uses: actions/checkout@v3
       - name: Use local action
         uses: ./
-        with:
-          version: 0.10.0
       - run: yak -h
