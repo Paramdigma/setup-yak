@@ -6837,7 +6837,7 @@ async function setup() {
     console.log("Specific version detected, attempting to find cached tool")
     var toolPath = tc.find("yak", version)
     console.log("Find result", toolPath)
-    if (toolPath != null) {
+    if (toolPath && toolPath.length != 0) {
       console.log("Adding tool to path")
       core.addPath(toolPath)
       return
