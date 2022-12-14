@@ -1,12 +1,13 @@
 name: Test setup-yak action
 
-on: 
-  workflow_dispatch
+on: push
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-    - uses: paramdigma/setup-yak@1.0.0
-    - run: yak -h
-      
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Use local action
+        uses: ./
+      - run: yak -h

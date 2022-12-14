@@ -1,19 +1,28 @@
 const core = require("@actions/core")
 const tc = require("@actions/tool-cache")
-const path = require("path")
-const vi = require("win-version-info")
+const { getFileProperties } = require("get-file-properties")
 
 async function setup() {
   // Get version of tool to be installed
-  const version = core.getInput("version")
+  const url = `https://files.mcneel.com/yak/tools/latest/yak.exe`
+  console.log("Fetching latest YAK version from", url)
 
-  const url = `https://files.mcneel.com/yak/tools/${version}/yak.exe`
-
-  // Download the specific version of the tool, e.g. as a tarball
   const pathToExe = await tc.downloadTool(url)
-  const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak")
+  console.log("Downloaded YAK into:", pathToExe)
+
+  var fileInfo = await getFileProperties(pathToExe.replace("\\", "\\\\"))
+  console.log("YAK version:", fileInfo.Version)
+
+  const cached = await tc.cacheFile(
+    pathToExe,
+    "yak.exe",
+    "yak",
+    fileInfo.Version
+  )
+  console.log("Cached yak as:", cached)
   // Expose the tool by adding it to the PATH
   core.addPath(cached)
+  console.log("Added yak dir to path", cached)
 }
 
-module.exports = setup
+setup()
