@@ -15,4 +15,6 @@ jobs:
           token: "my-fake-token"
       - run: yak -h
       - run: $env:YAK_TOKEN
-      - run: echo "${{ steps.yak.version }}"
+      - run: $env:YAK_VERSION
+        with:
+          YAK_VERSION: ${{ steps.yak.version }}
