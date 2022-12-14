@@ -12,5 +12,5 @@ inputs:
     description: "A CI token to use when using the push command"
     required: false
 outputs:
-  yak-version:
+  version:
     description: "The version of the Rhino package manager that was installed"

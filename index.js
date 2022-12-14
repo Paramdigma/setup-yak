@@ -30,8 +30,7 @@ async function setup() {
 
   console.info("Added yak dir to $PATH, you can now use it by invoking 'yak'")
 
-  core.setOutput("yak-version", fileInfo.Version)
-
+  core.setOutput("version", fileInfo.Version)
   if (token) core.exportVariable("YAK_TOKEN", token)
 }
 
