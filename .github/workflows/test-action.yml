@@ -9,6 +9,11 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run pack # Ensure we're testing on the latest build
       - name: Use local action
         id: yak
         uses: ./ # The root of this repo where action.yml lives
@@ -31,3 +36,10 @@ jobs:
           else
             exit 0
           fi
+      - name: Check if there are changes
+        id: changes
+        uses: UnicornGlobal/has-changes-action@v1.0.11
+      # You can now access a variable indicating if there have been changes
+      - name: Fail if git history is dirty
+        if: steps.changes.outputs.changed == 1
+        run: exit 1
