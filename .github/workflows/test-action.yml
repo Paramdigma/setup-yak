@@ -16,5 +16,5 @@ jobs:
       - run: yak -h
       - run: $env:YAK_TOKEN
       - run: $env:YAK_VERSION
-        with:
+        env:
           YAK_VERSION: ${{ steps.yak.version }}
