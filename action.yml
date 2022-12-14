@@ -7,3 +7,10 @@ runs:
 branding:
   icon: "package"
   color: "purple"
+inputs:
+  token:
+    description: "A CI token to use when using the push command"
+    required: false
+outputs:
+  version:
+    description: "The version of the Rhino package manager that was installed"

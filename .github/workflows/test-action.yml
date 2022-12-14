@@ -9,5 +9,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
       - name: Use local action
+        id: yak
         uses: ./
+        with:
+          token: "my-fake-token"
       - run: yak -h
+      - run: $env:YAK_TOKEN
+      - run: $env:YAK_VERSION
+        env:
+          YAK_VERSION: ${{ steps.yak.outputs.version }}
