@@ -1,6 +1,51 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 7391:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(2186)
+const tc = __nccwpck_require__(7784)
+const { getFileProperties } = __nccwpck_require__(2939)
+
+const url = `https://files.mcneel.com/yak/tools/latest/yak.exe`
+
+async function setup() {
+  // Get the token input var
+  const token = core.getInput("token", {
+    required: false,
+    trimWhitespace: true
+  })
+
+  // Download yak.exe to a temp folder
+  core.info("Fetching latest YAK version from", url)
+  const pathToExe = await tc.downloadTool(url)
+  core.info("Downloaded YAK into:", pathToExe)
+
+  // Get the file version
+  var fileVersion = (await getFileProperties(pathToExe.replace("\\", "\\\\")))
+    .Version
+  core.info("YAK version:", fileVersion)
+
+  // Cache the tool for further use
+  const cached = await tc.cacheFile(pathToExe, "yak.exe", "yak", fileVersion)
+  core.info("Cached yak as:", cached)
+
+  // Expose the tool by adding it to the PATH
+  core.addPath(cached)
+  core.info("Added yak dir to $PATH, you can now use it by invoking 'yak'")
+
+  // Set token to env var if it exists
+  if (token) core.exportVariable("YAK_TOKEN", token)
+  // Set version to output
+  core.setOutput("version", fileVersion)
+}
+
+module.exports = setup
+
+
+/***/ }),
+
 /***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -6824,42 +6869,9 @@ module.exports = require("util");
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const core = __nccwpck_require__(2186)
-const tc = __nccwpck_require__(7784)
-const { getFileProperties } = __nccwpck_require__(2939)
+const setup = __nccwpck_require__(7391)
 
-async function setup() {
-  // Get version of tool to be installed
-  const token = core.getInput("token", {
-    required: false,
-    trimWhitespace: true
-  })
-
-  const url = `https://files.mcneel.com/yak/tools/latest/yak.exe`
-  console.info("Fetching latest YAK version from", url)
-
-  const pathToExe = await tc.downloadTool(url)
-  console.info("Downloaded YAK into:", pathToExe)
-
-  var fileInfo = await getFileProperties(pathToExe.replace("\\", "\\\\"))
-  console.info("YAK version:", fileInfo.Version)
-
-  const cached = await tc.cacheFile(
-    pathToExe,
-    "yak.exe",
-    "yak",
-    fileInfo.Version
-  )
-  console.info("Cached yak as:", cached)
-  // Expose the tool by adding it to the PATH
-  core.addPath(cached)
-
-  console.info("Added yak dir to $PATH, you can now use it by invoking 'yak'")
-
-  core.setOutput("version", fileInfo.Version)
-  if (token) core.exportVariable("YAK_TOKEN", token)
-}
-
+// Setup yak tool
 setup()
 
 })();
