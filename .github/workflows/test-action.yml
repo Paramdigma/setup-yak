@@ -38,8 +38,7 @@ jobs:
           fi
       - name: Fail if git history is dirty
         run: |
-          if [[ -z "$(git status --porcelain)" ]];
-          then
+          if [[ -z "$(git status --porcelain)" ]]; then
             exit 0
           else
             exit 1
