@@ -1,5 +1,9 @@
-name: "Setup McNeel's YAK"
-description: "Sets up `yak` tool to publish Rhino/Grasshopper packages"
+name: "Setup McNeel YAK"
+description: "Quickly set-up McNeel's YAK tool to publish Rhino/Grasshopper packages"
+author: Paramdigma
 runs:
   using: "node16"
   main: "dist/index.js"
+branding:
+  icon: "package"
+  color: "purple"
