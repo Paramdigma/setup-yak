@@ -11,6 +11,12 @@ const { getFileProperties } = __nccwpck_require__(2939)
 const url = `https://files.mcneel.com/yak/tools/latest/yak.exe`
 
 async function setup() {
+  // Fail if not Windows
+  if (process.platform !== "win32") {
+    core.setFailed("This action can only run on Windows machines")
+    return
+  }
+
   // Get the token input var
   const token = core.getInput("token", {
     required: false,
