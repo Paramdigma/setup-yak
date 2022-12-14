@@ -8,20 +8,36 @@ The McNeel team can (and does) explain it's purpose better than we ever could [h
 
 ## Inputs
 
-This action has no inputs.
+### Token
 
-Ability to control the version that get's installed may come in future updates.
+You can provide an auth token to allow YAK to push packages to a specific account. YAK will search for this token on a `YAK_TOKEN` environment variable. Since the naming of the variable in your context may vary, passing a value here will effectively set the `YAK_TOKEN` env var from that point onward.
+
+This token is obtained by running `yak.exe --ci` on your **local machine**.
+
+This is an optional input, as it is only required if you are pushing
 
 ## Outputs
 
-This action has no outputs.
+### Version
 
-Running this action will add `yak` to the `$PATH` of your CI machine so that it can be used in subsequent jobs
+The version of YAK that was installed. This is for reference only.
+
+An example of this can be found in [the test action](.github/workflows/test-action.yml)
 
 ## Example usage
 
+### Basic usage
+
 ```yaml
-uses: paramdigma/setup-yak@0.1.0
+uses: paramdigma/setup-yak@1.0.0
+```
+
+### With a token
+
+```yaml
+uses: paramdigma/setup-yak@1.0.0
+with:
+  token: YOUR_TOKEN_HERE
 ```
 
 # Real-life working example
