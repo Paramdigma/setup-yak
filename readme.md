@@ -4,7 +4,7 @@ This action download the `latest` version of McNeel's standalone YAK tool, also 
 
 This tool is intended to help package and publish Rhino and Grasshopper.
 
-The McNeel team can (and does) explain this better than I ever could [here](https://developer.rhino3d.com/guides/yak/what-is-yak/)
+The McNeel team can (and does) explain it's purpose better than we ever could [here](https://developer.rhino3d.com/guides/yak/what-is-yak/)
 
 ## Inputs
 

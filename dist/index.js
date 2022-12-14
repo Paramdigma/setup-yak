@@ -6848,7 +6848,7 @@ async function setup() {
   console.log("Cached yak as:", cached)
   // Expose the tool by adding it to the PATH
   core.addPath(cached)
-  console.log("Added yak dir to $PATH, you can now using by invoking 'yak'")
+  console.log("Added yak dir to $PATH, you can now use it by invoking 'yak'")
 }
 
 setup()
