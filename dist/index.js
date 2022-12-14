@@ -6830,16 +6830,14 @@ const { getFileProperties } = __nccwpck_require__(2939)
 
 async function setup() {
   // Get version of tool to be installed
-  const version = core.getInput("version")
-  console.log("Starting Yak setup with version:", version)
+  const url = `https://files.mcneel.com/yak/tools/latest/yak.exe`
+  console.log("Fetching latest YAK version from", url)
 
-  const url = `https://files.mcneel.com/yak/tools/${version}/yak.exe`
   const pathToExe = await tc.downloadTool(url)
-
-  console.log("Downloaded yak into:", pathToExe)
+  console.log("Downloaded YAK into:", pathToExe)
 
   var fileInfo = await getFileProperties(pathToExe.replace("\\", "\\\\"))
-  console.log(fileInfo.Version)
+  console.log("YAK version:", fileInfo.Version)
 
   const cached = await tc.cacheFile(
     pathToExe,
