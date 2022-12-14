@@ -12,8 +12,6 @@ jobs:
       - name: Use local action
         id: yak
         uses: ./ # The root of this repo where action.yml lives
-        with:
-          token: "my-fake-token"
       - run: yak -h
       - name: "Test if $YAK_TOKEN is set"
         shell: "bash"
