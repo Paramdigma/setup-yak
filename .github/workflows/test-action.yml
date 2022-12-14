@@ -36,10 +36,11 @@ jobs:
           else
             exit 0
           fi
-      - name: Check if there are changes
-        id: changes
-        uses: UnicornGlobal/has-changes-action@v1.0.11
-      # You can now access a variable indicating if there have been changes
       - name: Fail if git history is dirty
-        if: steps.changes.outputs.changed == 1
-        run: exit 1
+        run: |
+          if [[ -z "$(git status --porcelain "" "")" ]];
+          then
+            exit 0
+          else
+            exit 1
+          fi

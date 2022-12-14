@@ -40,7 +40,7 @@ with:
   token: YOUR_TOKEN_HERE
 ```
 
-# Real-life working example
+## Real-life working example
 
 Our own [GH_SizeAnalyzer](https://github.com/Paramdigma/GH_SizeAnalyzer) uses this action to build and deploy to the marketplace on every pushed tag.
 
