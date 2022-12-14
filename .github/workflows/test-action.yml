@@ -13,4 +13,4 @@ jobs:
         with:
           token: "my-fake-token"
       - run: yak -h
-      - run: echo $YAK_PATH
+      - run: $env:YAK_TOKEN
